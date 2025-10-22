@@ -4,10 +4,14 @@ import Carousel from './components/Carousel';
 
 interface State {
   images: string[];
+  itemWidth: number;
+  frameSize: number;
+  step: number;
+  animationDuration: number;
 }
 
 class App extends React.Component<{}, State> {
-  state = {
+  state: State = {
     images: [
       './img/1.png',
       './img/2.png',
@@ -20,17 +24,81 @@ class App extends React.Component<{}, State> {
       './img/9.png',
       './img/10.png',
     ],
+    itemWidth: 130,
+    frameSize: 3,
+    step: 3,
+    animationDuration: 1000,
   };
 
+  handleChange =
+    (field: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = Number(event.target.value);
+
+      this.setState({ [field]: value } as unknown as Pick<State, keyof State>);
+    };
+
   render() {
-    const { images } = this.state;
+    const { images, itemWidth, frameSize, step, animationDuration } =
+      this.state;
 
     return (
       <div className="App">
-        {/* eslint-disable-next-line */}
-        <h1>Carousel with {images.length} images</h1>
+        <h1 data-cy="title" className="App__title">
+          Carousel with {images.length} images
+        </h1>
 
-        <Carousel />
+        <div className="App__controls">
+          <label htmlFor="itemId">
+            Item width:
+            <input
+              id="itemId"
+              type="number"
+              value={itemWidth}
+              onChange={this.handleChange('itemWidth')}
+            />
+          </label>
+
+          <label htmlFor="frameId">
+            Frame Size:
+            <input
+              id="frameId"
+              type="number"
+              value={frameSize}
+              onChange={this.handleChange('frameSize')}
+            />
+          </label>
+
+          <label htmlFor="stepId">
+            Step:
+            <input
+              id="stepId"
+              type="number"
+              value={step}
+              onChange={this.handleChange('step')}
+            />
+          </label>
+
+          <label htmlFor="animationId">
+            Animation Duration (ms):
+            <input
+              id="animationId"
+              type="number"
+              value={animationDuration}
+              onChange={this.handleChange('animationDuration')}
+            />
+          </label>
+        </div>
+
+        <div className="App__carousel">
+          <Carousel
+            images={images}
+            itemWidth={itemWidth}
+            frameSize={frameSize}
+            step={step}
+            animationDuration={animationDuration}
+            infinite={false}
+          />
+        </div>
       </div>
     );
   }
