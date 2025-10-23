@@ -19,24 +19,34 @@ const Carousel: React.FC<CarouselProps> = ({
   infinite = false,
 }) => {
   const [index, setIndex] = useState(0);
+  const horizontalGap = 10;
+  const effectiveItemWidth = itemWidth + horizontalGap;
 
   const handleNext = () => {
-    if (infinite) {
-      setIndex(prev => (prev + step) % images.length);
-    } else if (index < images.length - frameSize) {
-      setIndex(prev => Math.min(prev + step, images.length - frameSize));
-    }
+    setIndex(prev => {
+      if (infinite) {
+        const next = prev + step;
+
+        return next >= images.length ? 0 : next;
+      } else {
+        return Math.min(prev + step, images.length - frameSize);
+      }
+    });
   };
 
   const handlePrev = () => {
-    if (infinite) {
-      setIndex(prev => (prev - step + images.length) % images.length);
-    } else if (index > 0) {
-      setIndex(prev => Math.max(prev - step, 0));
-    }
+    setIndex(prev => {
+      if (infinite) {
+        const next = prev - step;
+
+        return next < 0 ? images.length - frameSize : next;
+      } else {
+        return Math.max(prev - step, 0);
+      }
+    });
   };
 
-  const offset = -index * itemWidth;
+  const offset = -index * effectiveItemWidth;
 
   return (
     <div className="Carousel">
@@ -51,12 +61,12 @@ const Carousel: React.FC<CarouselProps> = ({
 
       <div
         className="Carousel__viewport"
-        style={{ width: `${frameSize * itemWidth}px` }}
+        style={{ width: `${frameSize * effectiveItemWidth}px` }}
       >
         <ul
           className="Carousel__list"
           style={{
-            width: `${images.length * itemWidth}px`,
+            width: `${images.length * effectiveItemWidth}px`,
             transform: `translateX(${offset}px)`,
             transition: `transform ${animationDuration}ms ease`,
           }}

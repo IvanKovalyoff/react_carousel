@@ -30,11 +30,16 @@ class App extends React.Component<{}, State> {
     animationDuration: 1000,
   };
 
-  handleChange =
-    (field: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = Number(event.target.value);
+  componentDidMount() {
+    document.title = 'Carousel';
+  }
 
-      this.setState({ [field]: value } as unknown as Pick<State, keyof State>);
+  handleChange =
+    (field: 'itemWidth' | 'frameSize' | 'step' | 'animationDuration') =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = Math.max(1, Number(event.target.value) || 0);
+
+      this.setState({ [field]: value } as Pick<State, keyof State>);
     };
 
   render() {
@@ -55,6 +60,7 @@ class App extends React.Component<{}, State> {
               type="number"
               value={itemWidth}
               onChange={this.handleChange('itemWidth')}
+              min={1}
             />
           </label>
 
@@ -65,6 +71,7 @@ class App extends React.Component<{}, State> {
               type="number"
               value={frameSize}
               onChange={this.handleChange('frameSize')}
+              min={1}
             />
           </label>
 
@@ -75,6 +82,7 @@ class App extends React.Component<{}, State> {
               type="number"
               value={step}
               onChange={this.handleChange('step')}
+              min={1}
             />
           </label>
 
@@ -85,6 +93,7 @@ class App extends React.Component<{}, State> {
               type="number"
               value={animationDuration}
               onChange={this.handleChange('animationDuration')}
+              min={100}
             />
           </label>
         </div>
